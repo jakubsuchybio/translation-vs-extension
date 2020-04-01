@@ -62,10 +62,7 @@ namespace TranslationExtension.Commands
                 using (ITextEdit edit = view.TextBuffer.CreateEdit())
                 {
                     if (!view.Selection.IsEmpty)
-                    {
-                        edit.Delete(view.Selection.SelectedSpans[0].Span);
                         view.Selection.Clear();
-                    }
 
                     edit.Insert(view.Caret.ContainingTextViewLine.End, text);
                     edit.Apply();
