@@ -61,9 +61,6 @@ namespace TranslationExtension.Commands
 
                 using (ITextEdit edit = view.TextBuffer.CreateEdit())
                 {
-                    if (!view.Selection.IsEmpty)
-                        view.Selection.Clear();
-
                     edit.Insert(view.Caret.ContainingTextViewLine.End, text);
                     edit.Apply();
                 }
