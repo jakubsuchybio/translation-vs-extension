@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Commands\DontTranslate.cs" />
     <Compile Include="Commands\Translate.cs" />
+    <Compile Include="Helpers\ProjectHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AsyncVSPackage.cs" />
     <Compile Include="TranslationExtensionPackage.cs">

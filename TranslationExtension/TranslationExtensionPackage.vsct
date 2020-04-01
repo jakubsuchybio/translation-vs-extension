@@ -32,6 +32,11 @@
     </Buttons>
   </Commands>
 
+  <KeyBindings>
+    <KeyBinding guid="guidTranslationExtensionPackageCmdSet" id="DontTranslateId" mod1="Alt" key1="D" editor="guidVSStd97"/>
+    <KeyBinding guid="guidTranslationExtensionPackageCmdSet" id="TranslateId" mod1="Alt" key1="S" editor="guidVSStd97"/>
+  </KeyBindings>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidTranslationExtensionPackage" value="{0d6bc74b-746f-4204-82b6-c808a74be8dd}" />

@@ -1,8 +1,12 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
+using System.Diagnostics;
+using TranslationExtension.Helpers;
 using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using Task = System.Threading.Tasks.Task;
 
@@ -12,13 +16,16 @@ namespace TranslationExtension.Commands
     {
         public static DontTranslate Instance { get; private set; }
 
-        private readonly AsyncPackage package;
-        private IAsyncServiceProvider ServiceProvider => package;
+        private readonly AsyncPackage _package;
+        private IAsyncServiceProvider ServiceProvider => _package;
+
+        private DTE2 Dte2 { get; set; }
 
         private DontTranslate(AsyncPackage package, OleMenuCommandService commandService)
         {
-            this.package = package ?? throw new ArgumentNullException(nameof(package));
+            _package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+
 
             var menuCommandID = new CommandID(PackageGuids.guidTranslationExtensionPackageCmdSet, PackageIds.DontTranslateId);
             var menuItem = new MenuCommand(Execute, menuCommandID);
@@ -31,21 +38,47 @@ namespace TranslationExtension.Commands
 
             var commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
             Instance = new DontTranslate(package, commandService);
+
+            Instance.Dte2 = await package.GetServiceAsync(typeof(DTE)) as DTE2;
         }
 
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", GetType().FullName);
-            string title = "test1";
+            IWpfTextView view = ProjectHelpers.GetCurentTextView();
 
-            VsShellUtilities.ShowMessageBox(
-                package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (view != null)
+                InsertTextToEnd(view, Dte2, " //!-!");
+        }
+
+        private static void InsertTextToEnd(IWpfTextView view, DTE2 dte, string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            try
+            {
+                dte.UndoContext.Open("Add NonTranslate Mark");
+
+                using (ITextEdit edit = view.TextBuffer.CreateEdit())
+                {
+                    if (!view.Selection.IsEmpty)
+                    {
+                        edit.Delete(view.Selection.SelectedSpans[0].Span);
+                        view.Selection.Clear();
+                    }
+
+                    edit.Insert(view.Caret.ContainingTextViewLine.End, text);
+                    edit.Apply();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+            }
+            finally
+            {
+                dte.UndoContext.Close();
+            }
         }
     }
 }
