@@ -7,22 +7,24 @@
 
   <Commands package="guidTranslationExtensionPackage">
     <Groups>
-      <Group guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidTranslationExtensionPackageCmdSet" id="TranslationGroupId" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
     </Groups>
 
     <Buttons>
-      <Button guid="guidTranslationExtensionPackageCmdSet" id="Command1Id" priority="0x0100" type="Button">
-        <Parent guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="ImageCatalogGuid" id="ButtonClick" />
+      <Button guid="guidTranslationExtensionPackageCmdSet" id="DontTranslateId" priority="0x0100" type="Button">
+        <Parent guid="guidTranslationExtensionPackageCmdSet" id="TranslationGroupId" />
+        <Icon guid="ImageCatalogGuid" id="ModifyQueryDelete" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>Dont translate</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidTranslationExtensionPackageCmdSet" id="cmdidCommand2" priority="0x0100" type="Button">
-        <Parent guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="ImageCatalogGuid" id="ButtonClick" />
+      <Button guid="guidTranslationExtensionPackageCmdSet" id="TranslateId" priority="0x0100" type="Button">
+        <Parent guid="guidTranslationExtensionPackageCmdSet" id="TranslationGroupId" />
+        <Icon guid="ImageCatalogGuid" id="ModifyQueryInsertValues" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
           <ButtonText>Translate</ButtonText>
         </Strings>
@@ -36,9 +38,9 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidTranslationExtensionPackageCmdSet" value="{b995e28d-3256-454b-94a7-67c3e4b94678}">
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="Command1Id" value="0x0100" />
-      <IDSymbol value="4129" name="cmdidCommand2" />
+      <IDSymbol name="TranslationGroupId" value="0x1020" />
+      <IDSymbol name="DontTranslateId" value="0x0101" />
+      <IDSymbol name="TranslateId" value="0x0102"  />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

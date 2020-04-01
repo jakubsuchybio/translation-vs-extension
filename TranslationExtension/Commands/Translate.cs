@@ -1,40 +1,28 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.ComponentModel.Design;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using Task = System.Threading.Tasks.Task;
 
 namespace TranslationExtension.Commands
 {
     internal sealed class Translate
     {
+        public static Translate Instance { get; private set; }
+
         private readonly AsyncPackage package;
+        private IAsyncServiceProvider ServiceProvider => package;
 
         private Translate(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            var menuCommandID = new CommandID(PackageGuids.guidTranslationExtensionPackageCmdSet, PackageIds.cmdidCommand2);
+            var menuCommandID = new CommandID(PackageGuids.guidTranslationExtensionPackageCmdSet, PackageIds.TranslateId);
             var menuItem = new MenuCommand(Execute, menuCommandID);
             commandService.AddCommand(menuItem);
-        }
-
-        public static Translate Instance
-        {
-            get;
-            private set;
-        }
-
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
-        {
-            get
-            {
-                return package;
-            }
         }
 
         public static async Task InitializeAsync(AsyncPackage package)
@@ -49,7 +37,7 @@ namespace TranslationExtension.Commands
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", GetType().FullName);
-            string title = "Command2";
+            string title = "test2";
 
             VsShellUtilities.ShowMessageBox(
                 package,
