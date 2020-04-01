@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+
+  <Include href="KnownImageIds.vsct"/>
+
+  <Commands package="guidTranslationExtensionPackage">
+    <Groups>
+      <Group guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidTranslationExtensionPackageCmdSet" id="Command1Id" priority="0x0100" type="Button">
+        <Parent guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="ButtonClick" />
+        <Strings>
+          <ButtonText>Dont translate</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidTranslationExtensionPackageCmdSet" id="cmdidCommand2" priority="0x0100" type="Button">
+        <Parent guid="guidTranslationExtensionPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="ButtonClick" />
+        <Strings>
+          <ButtonText>Translate</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidTranslationExtensionPackage" value="{0d6bc74b-746f-4204-82b6-c808a74be8dd}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidTranslationExtensionPackageCmdSet" value="{b995e28d-3256-454b-94a7-67c3e4b94678}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="Command1Id" value="0x0100" />
+      <IDSymbol value="4129" name="cmdidCommand2" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
