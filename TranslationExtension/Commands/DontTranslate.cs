@@ -45,7 +45,7 @@ namespace TranslationExtension.Commands
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            IWpfTextView view = ProjectHelpers.GetCurentTextView();
+            var view = ProjectHelpers.GetCurentTextView();
 
             if (view != null)
                 InsertTextToEnd(view, Dte2, " //!-!");
@@ -59,7 +59,7 @@ namespace TranslationExtension.Commands
             {
                 dte.UndoContext.Open("Add NonTranslate Mark");
 
-                using (ITextEdit edit = view.TextBuffer.CreateEdit())
+                using (var edit = view.TextBuffer.CreateEdit())
                 {
                     edit.Insert(view.Caret.ContainingTextViewLine.End, text);
                     edit.Apply();

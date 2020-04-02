@@ -12,6 +12,8 @@ namespace TranslationExtension.Helpers
         ///<summary>Gets the TextView for the active document.</summary>
         internal static IWpfTextView GetCurentTextView()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IComponentModel componentModel = GetComponentModel();
             if (componentModel == null) return null;
             IVsEditorAdaptersFactoryService editorAdapter = componentModel.GetService<IVsEditorAdaptersFactoryService>();

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
+using TranslationExtension.Helpers;
 using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using Task = System.Threading.Tasks.Task;
 
@@ -36,16 +36,32 @@ namespace TranslationExtension.Commands
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", GetType().FullName);
-            string title = "test2";
 
-            VsShellUtilities.ShowMessageBox(
-                package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+
+            var view = ProjectHelpers.GetCurentTextView();
+            if (view.Selection.IsEmpty)
+            {
+                ShowMessage("Jou, takhle ne...", "Hele sorry jako, ale bez selekce to jeste neumim.", OLEMSGICON.OLEMSGICON_WARNING);
+                return;
+            }
+
+            if(view.Selection.SelectedSpans.Count > 1)
+            {
+                ShowMessage("Jou, takhle ne...", "Hele sorry jako, ale vice nasobnou selekci neumim a umet nebudu.", OLEMSGICON.OLEMSGICON_WARNING);
+                return;
+            }
+
+            var selectedString = view.Selection.SelectedSpans[0].GetText();
+            if(!selectedString.StartsWith("\"") || !selectedString.EndsWith("\""))
+            {
+                ShowMessage("Jou, takhle ne...", "Hele sorry jako, ale selekce musi obsahovat uvozovky na zacatku a i na konci.", OLEMSGICON.OLEMSGICON_WARNING);
+                return;
+            }
+
+
         }
+
+        private void ShowMessage(string title, string message, OLEMSGICON icon) =>
+            VsShellUtilities.ShowMessageBox(package, title, message, icon, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
     }
 }
