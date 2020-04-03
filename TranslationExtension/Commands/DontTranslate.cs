@@ -1,13 +1,11 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using TranslationExtension.Helpers;
-using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using Task = System.Threading.Tasks.Task;
 
 namespace TranslationExtension.Commands
@@ -17,13 +15,12 @@ namespace TranslationExtension.Commands
         public static DontTranslate Instance { get; private set; }
 
         private readonly AsyncPackage _package;
-        private IAsyncServiceProvider ServiceProvider => _package;
+        private readonly DTE2 _dte2;
 
-        private DTE2 Dte2 { get; set; }
-
-        private DontTranslate(AsyncPackage package, OleMenuCommandService commandService)
+        private DontTranslate(AsyncPackage package, DTE2 dte2, OleMenuCommandService commandService)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
+            _dte2 = dte2 ?? throw new ArgumentNullException(nameof(dte2));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
 
@@ -37,9 +34,8 @@ namespace TranslationExtension.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             var commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new DontTranslate(package, commandService);
-
-            Instance.Dte2 = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+            var dte2 = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+            Instance = new DontTranslate(package, dte2, commandService);
         }
 
         private void Execute(object sender, EventArgs e)
@@ -48,7 +44,7 @@ namespace TranslationExtension.Commands
             var view = ProjectHelpers.GetCurentTextView();
 
             if (view != null)
-                InsertTextToEnd(view, Dte2, " //!-!");
+                InsertTextToEnd(view, _dte2, " //!-!");
         }
 
         private static void InsertTextToEnd(IWpfTextView view, DTE2 dte, string text)
